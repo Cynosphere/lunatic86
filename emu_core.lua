@@ -2188,7 +2188,7 @@ local function upd_tick(cv)
     if (cv - clock) < 0.05 then
         oc_tick_i = oc_tick_i + 1
         -- if (oc_tick_i % 3) == 0 then
-        --platform_sleep(0)
+        platform_sleep(0)
         -- end
     end
     --cv = os.clock()
