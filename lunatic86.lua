@@ -22,7 +22,7 @@ argp["arch"] = "8086"
 
 if is_opencomputers then
 	argp["mempack"] = 3
-	if (1-blshift-62) == 0 then argp["mempack"] = 2 end
+	if (1<<62) == 0 then argp["mempack"] = 2 end
 end
 
 for i=1,#args do
@@ -67,7 +67,7 @@ if is_opencomputers then
 	local shell = require("shell")
 	local filesystem = require("filesystem")
     if filesystem.exists("emu_core.lua") then
-        dofile(pwd .. "platform_oc.lua")
+        dofile("platform_oc.lua")
 	else
 		local cwd = shell.getWorkingDirectory()
 		if filesystem.exists("/usr/lib/lunatic86/emu_core.lua") then
@@ -75,15 +75,15 @@ if is_opencomputers then
 		elseif filesystem.exists("/lib/lunatic86/emu_core.lua") then
 			shell.setWorkingDirectory("/lib/lunatic86")
         end
-		dofile(pwd .. "platform_oc.lua")
+		dofile("platform_oc.lua")
         shell.setWorkingDirectory(cwd)
     end
 elseif is_craftos then
     _G.pwd = shell.dir() .. "/"
-    dofile(pwd .. "platform_craftos.lua")
+    dofile("platform_craftos.lua")
 else
     pwd = ""
-	dofile(pwd .. "platform_curses.lua")
+	dofile("platform_curses.lua")
 end
 
 for dk,did in pairs(drive_map) do
