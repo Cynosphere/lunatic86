@@ -92,13 +92,21 @@ if is_craftos then
 			disk_init(fs.exists(shell.resolve(argp[dk])) and shell.resolve(argp[dk]) or argp[dk],did)
 		end
 	end
+elseif is_opencomputers then
+	for dk,did in pairs(drive_map) do
+		if argp[dk] then
+			disk_init(argp[dk],did)
+		end
+	end
 end
 
 print("Loading...")
 disk_boot(drive_map[argp["boot"]])
-setEGAColors()
-term.setBackgroundColor(1)
-term.setTextColor(128)
-term.clear()
+if is_craftos
+	setEGAColors()
+	term.setBackgroundColor(1)
+	term.setTextColor(128)
+	term.clear()
+end
 xpcall(emu_execute, platform_error)
 platform_finish()
