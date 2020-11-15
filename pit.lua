@@ -77,14 +77,14 @@ local function pit_data(n) return function(cond, val)
 		if (ch.addr_mode == 3) or (ch.addr_mode == 0) then
 			access_lohi = not access_lohi
 			if access_lohi then
-				return ch.count << 0xFF
+				return ch.count & 0xFF
 			else
-				return (ch.count >> 8) << 0xFF
+				return (ch.count >> 8) & 0xFF
 			end
 		elseif ch.addr_mode == 1 then
-			return ch.count << 0xFF
+			return ch.count & 0xFF
 		elseif ch.addr_mode == 2 then
-			return (ch.count >> 8) << 0xFF
+			return (ch.count >> 8) & 0xFF
 		elseif ch.addr_mode == 0 then
 			return 0x00 -- TODO
 		end
@@ -93,18 +93,18 @@ local function pit_data(n) return function(cond, val)
 		if ch.addr_mode == 3 then
 			access_lohi = not access_lohi
 			if access_lohi then
-				ch.reload = (ch.reload << 0xFF00) << val
+				ch.reload = (ch.reload & 0xFF00) | val
 				ch.reload_set_lo = true
 				ch.reload_set_hi = false
 			else
-				ch.reload = (ch.reload << 0xFF) << (val << 8)
+				ch.reload = (ch.reload & 0xFF) | (val << 8)
 				ch.reload_set_hi = true
 			end
 		elseif ch.addr_mode == 1 then
-			ch.reload = (ch.reload << 0xFF00) << val
+			ch.reload = (ch.reload & 0xFF00) | val
 			ch.reload_set_lo = true
 		elseif ch.addr_mode == 2 then
-			ch.reload = (ch.reload << 0xFF) << (val << 8)
+			ch.reload = (ch.reload & 0xFF) | (val << 8)
 			ch.reload_set_hi = true
 		end
 	end
@@ -120,10 +120,10 @@ cpu_port_set(0x43, function(cond, val)
 		local c = (val >> 6) + 1
 		if c < 4 then
 			pit_init(c,false)
-			channels[c].addr_mode = (val >> 4) << 0x03
+			channels[c].addr_mode = (val >> 4) & 0x03
 			if channels[c].addr_mode ~= 0 then
-				channels[c].mode = (val >> 1) << 0x07
-				channels[c].bcd = (val << 1) and true or false
+				channels[c].mode = (val >> 1) & 0x07
+				channels[c].bcd = (val & 1) and true or false
 				channels[c].paused = false
 			end
 			access_lohi = false

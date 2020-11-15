@@ -93,6 +93,7 @@ if is_craftos then
 		end
 	end
 end
+
 print("Loading...")
 disk_boot(drive_map[argp["boot"]])
 setEGAColors()

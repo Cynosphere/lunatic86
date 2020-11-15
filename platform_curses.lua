@@ -67,7 +67,7 @@ local function platform_kbd_tick()
 		local ch, code = platform_getc()
 		if ch ~= nil then
 			kbd_send_ibm(code, ch)
---			queued_up[#queued_up+1] = {code << 0x80, ch}
+--			queued_up[#queued_up+1] = {code | 0x80, ch}
 		else getmore = false end
 	end
 end

@@ -350,7 +350,7 @@ function platform_render_cga_color(vram, addr, mode)
     emu_debug(2, "Graphics mode: CGA Color")
     if not term.getGraphicsMode then if crash_on_gfx_fail then error("Graphics modes require CraftOS-PC v1.2 or later.") else return end end
     if not term.getGraphicsMode() then term.setGraphicsMode(true) end
-    local pnum = ((cga_get_palette() << 0x30) >> 4) + (mode == 5 and 2 or 0)
+    local pnum = ((cga_get_palette() & 0x30) >> 4) + (mode == 5 and 2 or 0)
     emu_debug(2, "using palette " .. pnum)
     local palette = cga_palettes[pnum]
     local dlines = video_pop_dirty_lines()
@@ -358,10 +358,10 @@ function platform_render_cga_color(vram, addr, mode)
 		local base = addr + (y * 80)
 		for x=0,79 do
             local chr = vram[base + x] or 0
-            term.setPixel(x*4, y, palette[(chr >> 6) << 3])
-            term.setPixel(x*4+1, y, palette[(chr >> 4) << 3])
-            term.setPixel(x*4+2, y, palette[(chr >> 2) << 3])
-            term.setPixel(x*4+3, y, palette[(chr >> 0) << 3])
+            term.setPixel(x*4, y, palette[(chr >> 6) & 3])
+            term.setPixel(x*4+1, y, palette[(chr >> 4) & 3])
+            term.setPixel(x*4+2, y, palette[(chr >> 2) & 3])
+            term.setPixel(x*4+3, y, palette[(chr >> 0) & 3])
 		end
 	end
 end
