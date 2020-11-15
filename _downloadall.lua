@@ -1,3 +1,5 @@
+local shell = require("shell")
+
 local cmd = "wget" -- "nget"
 local baseURL = "https://raw.githubusercontent.com/Cynosphere/lunatic86/master/"
 
