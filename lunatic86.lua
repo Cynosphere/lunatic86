@@ -102,7 +102,7 @@ end
 
 print("Loading...")
 disk_boot(drive_map[argp["boot"]])
-if is_craftos
+if is_craftos then
 	setEGAColors()
 	term.setBackgroundColor(1)
 	term.setTextColor(128)

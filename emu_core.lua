@@ -2072,7 +2072,7 @@ local clock = os.clock()
 run_one = function(no_interrupting, pr_state)
     if ((os.clock()) - clock) >= 1 then
         emu_debug(2, "noblock " .. tostring(CPU_IP))
-        platform_kbd_tick()
+        --platform_kbd_tick()
         clock = os.clock()
     end
 
@@ -2090,7 +2090,7 @@ run_one = function(no_interrupting, pr_state)
 
     if ((os.clock()) - clock) >= 1 then
             emu_debug(2, "noblock " .. tostring(CPU_IP))
-            platform_kbd_tick()
+            --platform_kbd_tick()
             clock = os.clock()
         end
     
@@ -2119,7 +2119,7 @@ run_one = function(no_interrupting, pr_state)
     
     if ((os.clock()) - clock) >= 1 then
         emu_debug(2, "noblock " .. tostring(CPU_IP))
-        platform_kbd_tick()
+        --platform_kbd_tick()
         clock = os.clock()
     end
     
@@ -2200,7 +2200,7 @@ local function upd_tick(cv)
     video_update()
     keyboard_update()
     pit_tick(clock)
-    platform_kbd_tick()
+    --platform_kbd_tick()
     -- handle OC waits
     cv = os.clock()
     if (cv - clock) < 0.05 then
@@ -2234,7 +2234,7 @@ local function cpu_execute()
             upd_tick(os.clock())
         elseif ((os.clock()) - clock) >= 1 then
             emu_debug(2, "noblock " .. tostring(CPU_IP))
-            platform_kbd_tick()
+            --platform_kbd_tick()
             clock = os.clock()
         end
         opc = opc + 1

@@ -276,7 +276,9 @@ function video_set_cursor(x, y, page)
 	end
 	RAM[0x450+page] = x
     RAM[0x451+page] = y
-    term.setCursorPos(x+1,y+1)
+	if term then
+    	term.setCursorPos(x+1,y+1)
+	end
 end	
 
 local vgapal={}
