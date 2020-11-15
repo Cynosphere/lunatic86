@@ -2066,14 +2066,14 @@ if cpu_arch == "8086" then
 end
 
 
-local clock = os.epoch("utc") / 1000
+local clock = os.clock()
 
 
 run_one = function(no_interrupting, pr_state)
-    if ((os.epoch("utc") / 1000) - clock) >= 1 then
+    if ((os.clock()) - clock) >= 1 then
         emu_debug(2, "noblock " .. tostring(CPU_IP))
         platform_kbd_tick()
-        clock = os.epoch("utc") / 1000
+        clock = os.clock()
     end
 
     if CPU_HASINT and not no_interrupting then
@@ -2088,10 +2088,10 @@ run_one = function(no_interrupting, pr_state)
         end
     end
 
-    if ((os.epoch("utc") / 1000) - clock) >= 1 then
+    if ((os.clock()) - clock) >= 1 then
             emu_debug(2, "noblock " .. tostring(CPU_IP))
             platform_kbd_tick()
-            clock = os.epoch("utc") / 1000
+            clock = os.clock()
         end
     
     if ((CPU_IP << 0xFF00) == 0x1100) and (CPU_SEGMENTS[2] == 0xF000) then
@@ -2117,10 +2117,10 @@ run_one = function(no_interrupting, pr_state)
     local om = opcode_map[opcode]
     
     
-    if ((os.epoch("utc") / 1000) - clock) >= 1 then
+    if ((os.clock()) - clock) >= 1 then
         emu_debug(2, "noblock " .. tostring(CPU_IP))
         platform_kbd_tick()
-        clock = os.epoch("utc") / 1000
+        clock = os.clock()
     end
     
     if om ~= nil then
@@ -2202,12 +2202,12 @@ local function upd_tick(cv)
     pit_tick(clock)
     platform_kbd_tick()
     -- handle OC waits
-    cv = os.epoch("utc") / 1000
+    cv = os.clock()
     if (cv - clock) < 0.05 then
         oc_tick_i = oc_tick_i + 1
-        -- if (oc_tick_i % 3) == 0 then
-        --platform_sleep(0)
-        -- end
+        --if (oc_tick_i % 3) == 0 then
+            platform_sleep(0)
+        --end
     end
     --cv = os.clock()
     -- handle pc speaker
@@ -2228,14 +2228,14 @@ local function cpu_execute()
     while execute == true do
         execute = run_one(false, true)
         if execute == "block" then
-            upd_tick(os.epoch("utc") / 1000)
+            upd_tick(os.clock())
             execute = true
-        elseif ((opc << 0x1FF) == 0) and ((os.epoch("utc") / 1000) - clock) >= 0.05 then
-            upd_tick(os.epoch("utc") / 1000)
-        elseif ((os.epoch("utc") / 1000) - clock) >= 1 then
+        elseif ((opc << 0x1FF) == 0) and ((os.clock()) - clock) >= 0.05 then
+            upd_tick(os.clock())
+        elseif ((os.clock()) - clock) >= 1 then
             emu_debug(2, "noblock " .. tostring(CPU_IP))
             platform_kbd_tick()
-            clock = os.epoch("utc") / 1000
+            clock = os.clock()
         end
         opc = opc + 1
     end
