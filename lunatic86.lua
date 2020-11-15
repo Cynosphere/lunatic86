@@ -86,9 +86,11 @@ else
 	dofile("platform_curses.lua")
 end
 
-for dk,did in pairs(drive_map) do
-	if argp[dk] then
-		disk_init(fs.exists(shell.resolve(argp[dk])) and shell.resolve(argp[dk]) or argp[dk],did)
+if is_craftos then
+	for dk,did in pairs(drive_map) do
+		if argp[dk] then
+			disk_init(fs.exists(shell.resolve(argp[dk])) and shell.resolve(argp[dk]) or argp[dk],did)
+		end
 	end
 end
 print("Loading...")
