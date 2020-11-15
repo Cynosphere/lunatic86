@@ -2070,12 +2070,6 @@ local clock = os.clock()
 
 
 run_one = function(no_interrupting, pr_state)
-    if ((os.clock()) - clock) >= 1 then
-        emu_debug(2, "noblock " .. tostring(CPU_IP))
-        --platform_kbd_tick()
-        clock = os.clock()
-    end
-
     if CPU_HASINT and not no_interrupting then
         -- local intr = table.remove(CPU_INTQUEUE, 1)
         local intr = CPU_INTQUEUE[1]
@@ -2087,12 +2081,6 @@ run_one = function(no_interrupting, pr_state)
             end
         end
     end
-
-    if ((os.clock()) - clock) >= 1 then
-            emu_debug(2, "noblock " .. tostring(CPU_IP))
-            --platform_kbd_tick()
-            clock = os.clock()
-        end
     
     if ((CPU_IP & 0xFF00) == 0x1100) and (CPU_SEGMENTS[2] == 0xF000) then
         CPU_FLAGS = CPU_FLAGS | (1 << (9)) -- enable interrupts during (after!) fake handlers
@@ -2117,11 +2105,6 @@ run_one = function(no_interrupting, pr_state)
     local om = opcode_map[opcode]
     
     
-    if ((os.clock()) - clock) >= 1 then
-        emu_debug(2, "noblock " .. tostring(CPU_IP))
-        --platform_kbd_tick()
-        clock = os.clock()
-    end
     
     if om ~= nil then
         local result = om(opcode)
@@ -2200,7 +2183,6 @@ local function upd_tick(cv)
     video_update()
     keyboard_update()
     pit_tick(clock)
-    --platform_kbd_tick()
     -- handle OC waits
     cv = os.clock()
     if (cv - clock) < 0.05 then
@@ -2232,10 +2214,6 @@ local function cpu_execute()
             execute = true
         elseif ((opc & 0x1FF) == 0) and ((os.clock()) - clock) >= 0.05 then
             upd_tick(os.clock())
-        elseif ((os.clock()) - clock) >= 1 then
-            emu_debug(2, "noblock " .. tostring(CPU_IP))
-            --platform_kbd_tick()
-            clock = os.clock()
         end
         opc = opc + 1
     end
