@@ -206,9 +206,9 @@ end
 #define cpu_flag(t) ((CPU_FLAGS & (1<<(t))) ~= 0)
 
 function cpu_clear_flag(t)
-	CPU_FLAGS = CPU_FLAGS & (bnot-(1 << t))
+	CPU_FLAGS = CPU_FLAGS & (~(1 << t))
 end
-#define cpu_clear_flag(t) CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (t)))
+#define cpu_clear_flag(t) CPU_FLAGS = CPU_FLAGS & (~(1 << (t)))
 
 function cpu_set_flag(t)
 	CPU_FLAGS = CPU_FLAGS | (1 << t)
@@ -219,7 +219,7 @@ function cpu_write_flag(t, v)
 	if v then
 		CPU_FLAGS = CPU_FLAGS | (1 << t)
 	else
-		CPU_FLAGS = CPU_FLAGS & (bnot-(1 << t))
+		CPU_FLAGS = CPU_FLAGS & (~(1 << t))
 	end
 end
 local cpu_write_flag = cpu_write_flag
@@ -563,7 +563,7 @@ local function _cpu_uf_co_sub(v1, v2, vb, vr, opc)
 end
 
 local function _cpu_uf_bit(vr, opc)
-	CPU_FLAGS = CPU_FLAGS & (bnot-0x0801) -- clear carry (0) and overflow (11)
+	CPU_FLAGS = CPU_FLAGS & (~0x0801) -- clear carry (0) and overflow (11)
 	_cpu_uf_zsp(vr, opc)
 end
 
@@ -2098,7 +2098,7 @@ run_one = function(no_interrupting, pr_state)
 			CPU_SEGMENTS[SEG_CS+1] = cpu_pop16()
 			local old_flags = cpu_pop16()
 			local old_flag_mask = 0x0200
-			CPU_FLAGS = (CPU_FLAGS & (bnot-old_flag_mask)) | (old_flags & old_flag_mask)
+			CPU_FLAGS = (CPU_FLAGS & (~old_flag_mask)) | (old_flags & old_flag_mask)
 			return true
 		else
 			return "block"

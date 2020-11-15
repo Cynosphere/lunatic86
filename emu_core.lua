@@ -213,7 +213,7 @@ end
 
 
 function cpu_clear_flag(t)
-    CPU_FLAGS = CPU_FLAGS & (bnot-(1 << t))
+    CPU_FLAGS = CPU_FLAGS & (~(1 << t))
 end
 
 
@@ -226,7 +226,7 @@ function cpu_write_flag(t, v)
     if v then
         CPU_FLAGS = CPU_FLAGS | (1 << t)
     else
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << t))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << t))
     end
 end
 local cpu_write_flag = cpu_write_flag
@@ -570,7 +570,7 @@ local function _cpu_uf_co_sub(v1, v2, vb, vr, opc)
 end
 
 local function _cpu_uf_bit(vr, opc)
-    CPU_FLAGS = CPU_FLAGS & (bnot-0x0801) -- clear carry (0) and overflow (11)
+    CPU_FLAGS = CPU_FLAGS & (~0x0801) -- clear carry (0) and overflow (11)
     _cpu_uf_zsp(vr, opc)
 end
 
@@ -1038,7 +1038,7 @@ local function cpu_int(cond)
     CPU_IP=addr
     CPU_HALTED=false
     
-    CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (9)))
+    CPU_FLAGS = CPU_FLAGS & (~(1 << (9)))
 end
 
 local rel_jmp_conds = {
@@ -1130,7 +1130,7 @@ opcode_map[0x27] = function(opcode)
         cpu_write_flag(0, old_cf or (al > 0xFF))
         CPU_FLAGS = CPU_FLAGS | (1 << (4))
     else
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (4)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (4)))
     end
     if (old_al > 0x99) or old_cf then
         al = al + 0x60
@@ -1162,13 +1162,13 @@ opcode_map[0x2F] = function(opcode)
         cpu_write_flag(0, old_cf or (al < 0))
         CPU_FLAGS = CPU_FLAGS | (1 << (4))
     else
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (4)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (4)))
     end
     if ((al) > 0x99) or old_cf then
         al = al - 0x60
         CPU_FLAGS = CPU_FLAGS | (1 << (0))
     else
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (0)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (0)))
     end
     CPU_REGS[1] = (CPU_REGS[1] & 0xFF00) | (al & 0xFF)
     _cpu_uf_zsp(al, 0)
@@ -1194,8 +1194,8 @@ opcode_map[0x37] = function(opcode)
         CPU_FLAGS = CPU_FLAGS | (1 << (0))
         CPU_FLAGS = CPU_FLAGS | (1 << (4))
     else
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (0)))
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (4)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (0)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (4)))
     end
     CPU_REGS[1] = (CPU_REGS[1] & 0xFF0F)
 end
@@ -1223,8 +1223,8 @@ opcode_map[0x3F] = function(opcode)
         CPU_FLAGS = CPU_FLAGS | (1 << (0))
         CPU_FLAGS = CPU_FLAGS | (1 << (4))
     else
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (0)))
-        CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (4)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (0)))
+        CPU_FLAGS = CPU_FLAGS & (~(1 << (4)))
     end
     CPU_REGS[1] = (CPU_REGS[1] & 0xFF0F)
 end
@@ -1989,11 +1989,11 @@ end
 opcode_map[0xF7] = opcode_map[0xF6]
 
 -- flag setters
-opcode_map[0xF8] = function(opcode) CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (0))) end
+opcode_map[0xF8] = function(opcode) CPU_FLAGS = CPU_FLAGS & (~(1 << (0))) end
 opcode_map[0xF9] = function(opcode) CPU_FLAGS = CPU_FLAGS | (1 << (0)) end
-opcode_map[0xFA] = function(opcode) CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (9))) end
+opcode_map[0xFA] = function(opcode) CPU_FLAGS = CPU_FLAGS & (~(1 << (9))) end
 opcode_map[0xFB] = function(opcode) CPU_FLAGS = CPU_FLAGS | (1 << (9)) end
-opcode_map[0xFC] = function(opcode) CPU_FLAGS = CPU_FLAGS & (bnot-(1 << (10))) end
+opcode_map[0xFC] = function(opcode) CPU_FLAGS = CPU_FLAGS & (~(1 << (10))) end
 opcode_map[0xFD] = function(opcode) CPU_FLAGS = CPU_FLAGS | (1 << (10)) end
 
 -- GRP4
@@ -2102,7 +2102,7 @@ run_one = function(no_interrupting, pr_state)
             CPU_SEGMENTS[2] = cpu_pop16()
             local old_flags = cpu_pop16()
             local old_flag_mask = 0x0200
-            CPU_FLAGS = (CPU_FLAGS & (bnot-old_flag_mask)) | (old_flags & old_flag_mask)
+            CPU_FLAGS = (CPU_FLAGS & (~old_flag_mask)) | (old_flags & old_flag_mask)
             return true
         else
             return "block"

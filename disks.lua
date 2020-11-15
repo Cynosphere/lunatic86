@@ -129,7 +129,7 @@ function disk_init(fn, id)
 		d.ptr = function(a, mode)
 			if ptrmode ~= mode then
 				if f ~= nil then f:close() end
-                f = io_seek.open(fn, mode)
+				f = io.open(fn, mode)
 				disk_init_data(f, a)
 				f:seek("set", 0)
 				ptrmode = mode
